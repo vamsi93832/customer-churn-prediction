@@ -216,3 +216,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# trained model files. rebuilt by 02_train_model_SIMPLE.py, and a pickle saved
+# with one scikit-learn version may not load in another, so no point versioning them
+*.pkl

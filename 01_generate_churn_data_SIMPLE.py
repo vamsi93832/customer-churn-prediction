@@ -13,6 +13,10 @@ import random  # For random values
 np.random.seed(42)
 random.seed(42)
 
+# fixed "today" for the dataset. using datetime.now() meant every run gave
+# different account ages and a different churn rate, so nothing was reproducible
+SNAPSHOT_DATE = datetime(2025, 1, 1)
+
 # Print welcome message
 print("\n" + "="*60)
 print("CREATING CUSTOMER CHURN DATASET")
@@ -39,8 +43,10 @@ customer_data = {
     # Random country
     'country': np.random.choice(['USA', 'Canada', 'UK', 'India', 'Australia'], num_customers),
     
-    # When they signed up (random date in 2022)
-    'registration_date': [datetime(2022, 1, 1) + timedelta(days=random.randint(0, 730)) for _ in range(num_customers)],
+    # When they signed up (random date from 2022 through 2024). runs right up to
+    # the snapshot date so there are newer customers too, otherwise every
+    # tenure bucket under a year comes out empty
+    'registration_date': [datetime(2022, 1, 1) + timedelta(days=random.randint(0, 1095)) for _ in range(num_customers)],
     
     # Subscription type
     'monthly_subscription': np.random.choice(['Basic', 'Standard', 'Premium'], num_customers, p=[0.4, 0.4, 0.2]),
@@ -73,10 +79,11 @@ behavior_data = []
 # For each customer, create behavior record
 for idx, customer in customers.iterrows():
     # Days since customer signed up
-    days_active = (datetime.now() - customer['registration_date']).days
+    days_active = (SNAPSHOT_DATE - customer['registration_date']).days
     
     # How many times logged in last 30 days
     login_30 = random.randint(0, 30) if days_active > 0 else 0
+    views_30 = random.randint(0, 500)
     
     # Create behavior entry
     behavior_data.append({
@@ -86,13 +93,18 @@ for idx, customer in customers.iterrows():
         # Logins in last 30 days
         'login_count_last_30': login_30,
         # Logins in last 90 days
-        'login_count_last_90': random.randint(0, 90) if days_active > 0 else 0,
+        # the 90-day window includes the last 30, so it can never be smaller.
+        # these used to be drawn separately, which gave customers with more
+        # logins in 30 days than in 90
+        'login_count_last_90': login_30 + random.randint(0, 60) if days_active > 0 else 0,
         # Days since last login (important for churn!)
-        'days_since_last_login': random.randint(0, min(days_active, 365)),
+        # most active subscribers logged in recently, with a long tail of people
+        # drifting away. a flat 0-365 draw put 75% of customers at 90+ days idle
+        'days_since_last_login': min(int(np.random.exponential(20)), days_active, 365),
         # Content views last 30 days
-        'content_views_last_30': random.randint(0, 500),
-        # Content views last 90 days
-        'content_views_last_90': random.randint(0, 1000),
+        'content_views_last_30': views_30,
+        # Content views last 90 days (same reasoning as logins above)
+        'content_views_last_90': views_30 + random.randint(0, 500),
         # Support tickets (if they contacted support)
         'support_tickets_count': random.randint(0, 20),
         # Support satisfaction (1-5 or null)
@@ -124,13 +136,15 @@ financial_data = []
 # For each customer, create financial record
 for idx, customer in customers.iterrows():
     # How many months they've been customer
-    months_active = max(1, (datetime.now() - customer['registration_date']).days // 30)
+    months_active = max(1, (SNAPSHOT_DATE - customer['registration_date']).days // 30)
     
     # How many payments made (less than months = missed some)
     payments_made = random.randint(max(0, months_active - 2), months_active)
     
     # Failed payments (bad credit card, etc.)
-    failed_payments = random.randint(0, 3)
+    # most customers never have a payment fail. an even 0-3 draw gave half of
+    # them 2+ failures, which pushed the churn rate way past anything realistic
+    failed_payments = int(np.random.choice([0, 1, 2, 3], p=[0.75, 0.15, 0.07, 0.03]))
     
     # Days overdue (if failed payments)
     days_overdue = 0 if failed_payments == 0 else random.randint(1, 90)
@@ -156,7 +170,8 @@ for idx, customer in customers.iterrows():
         # Upgrades (switched to higher plan)
         'upgrade_count': random.randint(0, 5),
         # Downgrades (switched to lower plan - churn signal!)
-        'downgrade_count': random.randint(0, 3),
+        # same idea: downgrades are a minority signal, not something 3 in 4 customers do
+        'downgrade_count': int(np.random.choice([0, 1, 2, 3], p=[0.75, 0.17, 0.06, 0.02])),
         # When billing happens (1-28)
         'billing_cycle_day': random.randint(1, 28),
     })
@@ -208,14 +223,16 @@ for idx, customer in customers.iterrows():
         churn_score += 1
     
     # Convert score to churn probability
+    # tuned so overall churn lands around 20%, in the range a real
+    # subscription business sees. the old numbers produced 63%
     if churn_score >= 5:
-        churn_probability = 0.8  # 80% chance of churn
+        churn_probability = 0.75  # 75% chance of churn
     elif churn_score >= 3:
-        churn_probability = 0.5  # 50% chance
+        churn_probability = 0.45  # 45% chance
     elif churn_score >= 2:
-        churn_probability = 0.3  # 30% chance
+        churn_probability = 0.25  # 25% chance
     else:
-        churn_probability = 0.1  # 10% chance
+        churn_probability = 0.08  # 8% chance
     
     # Decide if customer churned (random based on probability)
     is_churned = random.random() < churn_probability
@@ -228,7 +245,7 @@ for idx, customer in customers.iterrows():
         # Probability of churn (0.0 to 1.0)
         'churn_probability_score': round(churn_probability, 3),
         # When they'll likely churn
-        'likely_churn_date': (datetime.now() + timedelta(days=random.randint(1, 30))).date() if is_churned else None,
+        'likely_churn_date': (SNAPSHOT_DATE + timedelta(days=random.randint(1, 30))).date() if is_churned else None,
     })
 
 # Convert to table
@@ -254,7 +271,10 @@ master = master.merge(financial, on='customer_id', how='left')
 master = master.merge(churn, on='customer_id', how='left')
 
 # Fill missing satisfaction scores with median
-master['support_satisfaction_score'].fillna(master['support_satisfaction_score'].median(), inplace=True)
+# (assigning the result back instead of inplace=True. on current pandas the
+# inplace version silently does nothing and the blanks stay in the file)
+master['support_satisfaction_score'] = master['support_satisfaction_score'].fillna(
+    master['support_satisfaction_score'].median())
 
 # Save merged dataset
 master.to_csv('master_data.csv', index=False)

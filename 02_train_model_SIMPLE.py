@@ -11,8 +11,7 @@ from sklearn.preprocessing import StandardScaler  # Make numbers same scale
 from sklearn.ensemble import RandomForestClassifier  # ML algorithm
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score  # Evaluation
 import pickle  # For saving model
-import warnings  # Hide warnings
-warnings.filterwarnings('ignore')
+import sys  # For a clean exit if the data is missing
 
 print("\n" + "="*80)
 print("CUSTOMER CHURN PREDICTION - MACHINE LEARNING MODEL")
@@ -32,7 +31,7 @@ try:
 except FileNotFoundError:
     print("❌ Error: master_data.csv not found")
     print("Run 01_generate_churn_data_SIMPLE.py first!")
-    exit()
+    sys.exit(1)
 
 # ============================================================================
 # STEP 2: EXPLORE DATA
@@ -104,10 +103,12 @@ df['inactive_risk'] = (df['days_since_last_login'] > 30).astype(int)
 print("✓ Created risk indicators")
 
 # Fill missing satisfaction scores with average
-df['support_satisfaction_score'].fillna(df['support_satisfaction_score'].median(), inplace=True)
+# assigned back on purpose. inplace=True on a single column silently does
+# nothing on current pandas, so the blanks would survive
+df['support_satisfaction_score'] = df['support_satisfaction_score'].fillna(
+    df['support_satisfaction_score'].median())
 print("✓ Filled missing support satisfaction scores\n")
 
-print(f"Total features created: 28")
 
 # ============================================================================
 # STEP 4: PREPARE DATA FOR ML
@@ -156,7 +157,7 @@ X = df[feature_list].copy()  # Features (predictors)
 y = df['churn_flag'].copy()  # Target (what we predict)
 
 # Fill any remaining NaN values with mean
-X.fillna(X.mean(), inplace=True)
+X = X.fillna(X.mean())
 
 print(f"✓ Selected {len(feature_list)} features")
 print(f"✓ Feature matrix shape: {X.shape}")
@@ -242,7 +243,8 @@ y_test_prob = model.predict_proba(X_test_scaled)[:, 1]
 
 # Calculate metrics for training set
 train_accuracy = accuracy_score(y_train, y_train_pred)
-print(f"Training Accuracy: {train_accuracy:.4f} (92% = model got 92% correct)\n")
+# the gap between train and test accuracy shows how much the model overfits
+print(f"Training Accuracy: {train_accuracy:.4f}\n")
 
 # Calculate metrics for test set
 test_accuracy = accuracy_score(y_test, y_test_pred)
@@ -317,12 +319,13 @@ predictions_df = pd.DataFrame({
     'actual_churn': df['churn_flag'],  # Actual churn (for comparison)
     'predicted_churn': churn_predictions,  # What model predicts (0 or 1)
     'churn_probability': np.round(churn_probability, 4),  # Churn probability (0.0-1.0)
-    'churn_risk_level': pd.cut(churn_probability, bins=[0, 0.3, 0.6, 1.0], labels=['Low', 'Medium', 'High'])
+    # include_lowest so a probability of exactly 0 still gets a tier instead of a blank
+    'churn_risk_level': pd.cut(churn_probability, bins=[0, 0.3, 0.6, 1.0],
+                               labels=['Low', 'Medium', 'High'], include_lowest=True),
+    # the model learned from the training rows, so only in_test rows give an
+    # honest read on accuracy. the dashboard and SQL can filter on this
+    'in_test': df.index.isin(X_test.index).astype(int),
 })
-
-# Save predictions
-predictions_df.to_csv('churn_predictions.csv', index=False)
-print(f"✓ Created churn_predictions.csv ({len(predictions_df)} records)\n")
 
 # ============================================================================
 # STEP 11: SEGMENT CUSTOMERS
@@ -353,6 +356,11 @@ print(predictions_df['churn_risk_level'].value_counts().sort_index())
 print("\nRetention Priority Segments:")
 print(predictions_df['retention_priority'].value_counts())
 print()
+
+# saved after segmenting, not before. the SQL queries filter on
+# retention_priority, and the old version wrote the file without it
+predictions_df.to_csv('churn_predictions.csv', index=False)
+print(f"✓ Created churn_predictions.csv ({len(predictions_df)} records)\n")
 
 # ============================================================================
 # SUMMARY

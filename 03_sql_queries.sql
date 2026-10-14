@@ -61,6 +61,7 @@ CREATE TABLE churn_predictions (
     churn_risk_level VARCHAR(20),
     customer_value VARCHAR(20),
     retention_priority VARCHAR(20),
+    in_test INT,  -- 1 = held out from training, use these rows to judge accuracy
     FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
 );
 
@@ -244,13 +245,9 @@ GROUP BY
         WHEN f.total_months_subscribed <= 12 THEN '7-12 Months'
         ELSE '12+ Months'
     END
-ORDER BY 
-    CASE 
-        WHEN account_age_bucket = '0-3 Months' THEN 1
-        WHEN account_age_bucket = '4-6 Months' THEN 2
-        WHEN account_age_bucket = '7-12 Months' THEN 3
-        ELSE 4
-    END;
+-- sorting on the smallest tenure in each bucket keeps them in time order.
+-- the old version put the column alias inside a CASE, which Postgres rejects
+ORDER BY MIN(f.total_months_subscribed);
 
 -- QUERY 9: Feature Usage Impact
 SELECT 
@@ -278,7 +275,7 @@ GROUP BY
 ORDER BY churn_rate DESC;
 
 -- QUERY 10: Retention Action Plan - CRITICAL Priority
-SELECT TOP 100
+SELECT
     c.customer_id,
     c.country,
     c.monthly_subscription,
@@ -303,7 +300,8 @@ JOIN behavior b ON c.customer_id = b.customer_id
 JOIN financial f ON c.customer_id = f.customer_id
 JOIN churn_predictions p ON c.customer_id = p.customer_id
 WHERE p.retention_priority = 'CRITICAL'
-ORDER BY f.total_revenue DESC;
+ORDER BY f.total_revenue DESC
+LIMIT 100;  -- was TOP 100, which only works on SQL Server
 
 -- ==================== INDEX CREATION ====================
 
