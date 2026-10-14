@@ -1,0 +1,6 @@
+tenure_group,customers,churn_rate_pct
+0-6 months,1481,52.9
+7-12 months,705,35.9
+1-2 years,1024,28.7
+2-4 years,1594,20.4
+4-6 years,2239,9.5

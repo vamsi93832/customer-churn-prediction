@@ -1,0 +1,4 @@
+risk_tier,active_customers,monthly_revenue,tier_churn_rate_pct,expected_monthly_loss
+Medium,1423,98034.0,34.0,33361.0
+High,449,37271.0,67.4,25106.0
+Low,3302,181681.0,6.8,12341.0

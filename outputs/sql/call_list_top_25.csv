@@ -1,0 +1,26 @@
+customerID,churn_score,months_as_customer,contract,monthly_bill,main_risk,suggested_action
+3292-PBZEJ,0.8891,11,Month-to-month,111.4,No contract + Pays by e-check,Discounted 1-year contract + auto-pay discount
+2081-VEYEH,0.8649,3,Month-to-month,107.95,"New, no contract + Pays by e-check",Welcome call + discounted 1-year contract + auto-pay discount
+5956-YHHRX,0.8928,21,Month-to-month,104.35,"No contract + Pays by e-check + Fiber, no tech support",Discounted 1-year contract + auto-pay discount + free tech support trial
+6734-GMPVK,0.8846,5,Month-to-month,105.3,"New, no contract + Pays by e-check + Fiber, no tech support",Welcome call + discounted 1-year contract + auto-pay discount + free tech support trial
+5760-IFJOZ,0.862,3,Month-to-month,107.95,"New, no contract + Fiber, no tech support",Welcome call + discounted 1-year contract + free tech support trial
+5995-SNNEW,0.8858,23,Month-to-month,104.45,"No contract + Pays by e-check + Fiber, no tech support",Discounted 1-year contract + auto-pay discount + free tech support trial
+7145-FEJWU,0.8733,12,Month-to-month,105.3,"No contract + Pays by e-check + Fiber, no tech support",Discounted 1-year contract + auto-pay discount + free tech support trial
+6030-REHUX,0.8233,28,Month-to-month,110.85,No contract + Pays by e-check,Discounted 1-year contract + auto-pay discount
+0365-BZUWY,0.8843,17,Month-to-month,102.55,"No contract + Pays by e-check + Fiber, no tech support",Discounted 1-year contract + auto-pay discount + free tech support trial
+4298-OYIFC,0.8687,15,Month-to-month,103.45,No contract + Pays by e-check,Discounted 1-year contract + auto-pay discount
+2107-FBPTK,0.8614,30,Month-to-month,104.1,"No contract + Pays by e-check + Fiber, no tech support",Discounted 1-year contract + auto-pay discount + free tech support trial
+8313-NDOIA,0.8597,24,Month-to-month,104.15,"No contract + Pays by e-check + Fiber, no tech support",Discounted 1-year contract + auto-pay discount + free tech support trial
+5150-ITWWB,0.9426,3,Month-to-month,94.85,"New, no contract + Pays by e-check + Fiber, no tech support",Welcome call + discounted 1-year contract + auto-pay discount + free tech support trial
+3629-ZNKXA,0.8775,17,Month-to-month,101.8,"No contract + Pays by e-check + Fiber, no tech support",Discounted 1-year contract + auto-pay discount + free tech support trial
+9094-AZPHK,0.8899,15,Month-to-month,100.15,"No contract + Pays by e-check + Fiber, no tech support",Discounted 1-year contract + auto-pay discount + free tech support trial
+3001-UNBTL,0.8534,29,Month-to-month,103.95,"No contract + Pays by e-check + Fiber, no tech support",Discounted 1-year contract + auto-pay discount + free tech support trial
+4132-KALRO,0.8756,4,Month-to-month,100.85,"New, no contract",Welcome call + discounted 1-year contract
+3320-VEOYC,0.922,14,Month-to-month,95.6,"No contract + Pays by e-check + Fiber, no tech support",Discounted 1-year contract + auto-pay discount + free tech support trial
+7392-YYPYJ,0.8703,22,Month-to-month,100.65,"No contract + Pays by e-check + Fiber, no tech support",Discounted 1-year contract + auto-pay discount + free tech support trial
+1104-TNLZA,0.8278,28,Month-to-month,105.8,No contract + Pays by e-check,Discounted 1-year contract + auto-pay discount
+6350-XFYGW,0.9235,4,Month-to-month,94.75,"New, no contract + Pays by e-check + Fiber, no tech support",Welcome call + discounted 1-year contract + auto-pay discount + free tech support trial
+2754-SDJRD,0.8735,8,Month-to-month,100.15,No contract,Discounted 1-year contract
+9290-SHCMB,0.9001,13,Month-to-month,96.85,"No contract + Pays by e-check + Fiber, no tech support",Discounted 1-year contract + auto-pay discount + free tech support trial
+8161-QYMTT,0.9231,7,Month-to-month,94.1,"No contract + Pays by e-check + Fiber, no tech support",Discounted 1-year contract + auto-pay discount + free tech support trial
+6851-WEFYX,0.8609,35,Month-to-month,100.8,"No contract + Pays by e-check + Fiber, no tech support",Discounted 1-year contract + auto-pay discount + free tech support trial

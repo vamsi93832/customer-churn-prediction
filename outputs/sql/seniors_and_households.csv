@@ -1,0 +1,7 @@
+senior,has_partner,has_dependents,customers,churn_rate_pct
+Yes,No,No,561,49.2
+Yes,Yes,No,490,36.3
+No,No,No,2719,31.2
+No,No,Yes,353,21.2
+No,Yes,No,1163,20.8
+No,Yes,Yes,1666,13.7

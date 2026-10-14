@@ -1,0 +1,4 @@
+risk_tier,held_out_customers,actual_churn_pct,avg_predicted_score
+High,337,67.4,0.843
+Medium,526,34.0,0.589
+Low,898,6.8,0.152

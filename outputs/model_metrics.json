@@ -1,0 +1,12 @@
+{
+  "model": "Logistic regression",
+  "test_customers": 1761,
+  "base_rate": 0.2652,
+  "roc_auc": 0.8442,
+  "flagged_share": 0.1914,
+  "recall": 0.4861,
+  "precision": 0.6736,
+  "lift_vs_random": 2.54,
+  "high_cutoff": 0.7573,
+  "medium_cutoff": 0.3829
+}

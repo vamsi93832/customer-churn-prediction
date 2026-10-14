@@ -1,0 +1,4 @@
+# everything needed to rebuild the results from the raw data (Colab or local)
+-r requirements.txt
+scikit-learn>=1.3
+duckdb>=1.0

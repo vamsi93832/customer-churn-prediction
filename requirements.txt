@@ -1,6 +1,7 @@
-# loose floors on purpose. the old exact pins (numpy 1.24.3, pandas 2.0.3) have
-# no wheels for the python version Colab runs, so pip install failed outright.
-# scikit-learn was also missing even though the model script needs it
+# what the dashboard needs. Streamlit Cloud installs this file, so it stays
+# small: the app only reads finished results from outputs/, no training.
+# streamlit 1.51 is the oldest version that runs app.py. I tested 1.45, 1.48
+# and 1.50 and they all crash on width="stretch"
 pandas>=2.0
-numpy>=1.24
-scikit-learn>=1.3
+altair>=5.0
+streamlit>=1.51

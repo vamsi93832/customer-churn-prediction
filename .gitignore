@@ -217,6 +217,10 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# trained model files. rebuilt by 02_train_model_SIMPLE.py, and a pickle saved
-# with one scikit-learn version may not load in another, so no point versioning them
+# model files, if any get saved later. a pickle from one scikit-learn
+# version may not load in another, so no point versioning them
 *.pkl
+
+# rebuilt by 01_prepare_data.py. the raw IBM file next to it IS committed
+# (Apache 2.0) so the pipeline works even if IBM's link moves
+data/telco_clean.csv

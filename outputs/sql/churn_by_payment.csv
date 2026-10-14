@@ -1,0 +1,5 @@
+payment_method,auto_pay,customers,churn_rate_pct
+Electronic check,No,2365,45.3
+Mailed check,No,1612,19.1
+Bank transfer (automatic),Yes,1544,16.7
+Credit card (automatic),Yes,1522,15.2
