@@ -1,5 +1,9 @@
 # Customer Churn Prediction
 
+[![Open the live dashboard](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://customer-churn-prediction-7upxlebeqqvfgeb2vpgekk.streamlit.app/)
+
+**[View the live dashboard →](https://customer-churn-prediction-7upxlebeqqvfgeb2vpgekk.streamlit.app/)**
+
 **Which telecom customers are about to cancel, why, and who should the retention team call first?**
 
 A telecom company lost 26.5% of its customers in a single month, taking $139,000 of monthly revenue with them. This project finds what drives those cancellations, scores every active customer's risk, and turns the scores into a call list where each customer comes with a reason and a matching offer. It runs end to end in Python, SQL and a Streamlit dashboard.
